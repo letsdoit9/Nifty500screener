@@ -12,10 +12,15 @@ st.title("📈 Nifty500 Real-Time Screener")
 
 @st.cache_data(ttl=600)
 def load_data():
-    url = "https://assets.upstox.com/market-quote/instruments/exchange/nse_eq.csv"
-    df = pd.read_csv(url)
-    df = df[df['instrument_key'].str.contains("NSE_EQ")]
-    return df
+    url = "https://assets.upstox.com/market-quote/instruments/exchange/NSE.csv.gz"
+    try:
+        df = pd.read_csv(url, compression='gzip')  # NOTE: 'gzip' added here
+        df = df[df['instrument_key'].str.contains("NSE_EQ")]
+        return df
+    except Exception as e:
+        st.error("❌ Data load nahi ho paaya. Kripya URL ya internet connection check karein.")
+        st.stop()
+
 
 @st.cache_data
 def load_nifty500_keys():
